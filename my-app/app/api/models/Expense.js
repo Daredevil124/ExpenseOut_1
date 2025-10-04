@@ -11,6 +11,10 @@ const expenseSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  username:{
+    type: String,
+    required: true
+  },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ExpenseCategory',
@@ -42,60 +46,31 @@ const expenseSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending'
   },
-  current_approver_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
+  approved: {
+  type: Map,
+  of: {
+    timestamp: { type: String },
+    comment: { type: String }
   },
-  current_step: {
-    type: Number,
-    default: 1
+  default: {}
+},
+pending: {
+  type: Map,
+  of: {
+    timestamp: { type: String },
+    comment: { type: String }
   },
-  workflow_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ApprovalWorkflow',
-    default: null
+  default: {}
+},
+rejected: {
+  type: Map,
+  of: {
+    timestamp: { type: String },
+    comment: { type: String }
   },
-  is_manager_approval_required: {
-    type: Boolean,
-    default: true
-  },
-  manager_approved: {
-    type: Boolean,
-    default: false
-  },
-  manager_approved_at: {
-    type: Date,
-    default: null
-  },
-  manager_comments: {
-    type: String,
-    trim: true,
-    maxlength: 1000
-  },
-  final_approved_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  },
-  final_approved_at: {
-    type: Date,
-    default: null
-  },
-  rejected_by: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  },
-  rejected_at: {
-    type: Date,
-    default: null
-  },
-  rejection_reason: {
-    type: String,
-    trim: true,
-    maxlength: 1000
-  }
+  default: {}
+},
+  
 }, {
   timestamps: true
 });
