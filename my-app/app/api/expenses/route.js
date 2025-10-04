@@ -1,7 +1,4 @@
 import { NextResponse } from 'next/server';
-import { connectToDB } from '@/lib/db'; // Assuming you have a db connection utility
-import Expense from '@/models/Expense'; // Assuming models are in a /models directory
-import User from '@/models/User'; // We need the User model for populating
 
 export async function GET(request) {
   try {
