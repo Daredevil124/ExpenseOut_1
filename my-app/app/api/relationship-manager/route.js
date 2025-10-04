@@ -78,12 +78,15 @@ export async function PATCH(req) {
 		}
 
 		// Update the relationship
-		relDoc.role = role;
-		relDoc.email = email;
-		relDoc.manager = normalizedRole === 'admin' ? null : managerUser.username;
-		await relDoc.save();
+	relDoc.role = role;
+	relDoc.email = email;
+	relDoc.manager = normalizedRole === 'admin' ? null : managerUser.username;
+	await relDoc.save();
 
-		return NextResponse.json({ message: 'Relationship updated successfully.', username: relDoc.username }, { status: 200 });
+	// Also update the user's email in the User collection
+	await User.updateOne({ username }, { $set: { email } });
+
+	return NextResponse.json({ message: 'Relationship updated successfully.', username: relDoc.username }, { status: 200 });
 	} catch (err) {
 		return NextResponse.json({ error: err.message }, { status: 500 });
 	}
@@ -117,6 +120,12 @@ export async function PUT(req) {
 		let user = await User.findOne({ username });
 		if (!user) {
 			user = await User.create({ username, email, role });
+		} else {
+			// Update email if changed
+			if (user.email !== email) {
+				user.email = email;
+				await user.save();
+			}
 		}
 
 		// If not admin, find or create manager
