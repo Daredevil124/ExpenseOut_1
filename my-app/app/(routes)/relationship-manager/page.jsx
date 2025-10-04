@@ -219,10 +219,27 @@ export default function RelationshipManagerDashboard() {
     }
   };
 
-  // Send password handler (placeholder for now)
+  // Send password handler (calls backend API)
   const handleSendPassword = async (row) => {
-    // TODO: Implement actual email sending via backend
-    alert(`Password email would be sent to ${row.email}`);
+    if (!row.user || !row.email) {
+      alert('Username and email are required to send password.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/users/send-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: row.user, email: row.email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Password sent to user email!');
+      } else {
+        alert(data.error || 'Failed to send password');
+      }
+    } catch (err) {
+      alert('Failed to send password');
+    }
   };
 
   // Render dropdown for users
