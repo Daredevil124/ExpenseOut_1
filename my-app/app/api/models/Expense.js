@@ -31,12 +31,7 @@ const expenseSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  currency: {
-    type: String,
-    required: true,
-    uppercase: true,
-    length: 3
-  },
+ 
   expense_date: {
     type: Date,
     required: true
