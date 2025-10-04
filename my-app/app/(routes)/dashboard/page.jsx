@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Clock, DollarSign, Calendar, User, MessageSquare, Eye, Filter, ChevronDown, Send, ArrowRight } from 'lucide-react';
+import CurrencySelector from '@/components/currency';
 
 const ExpenseApprovalDashboard = () => {
   const [activeTab, setActiveTab] = useState('pending');
@@ -17,12 +18,19 @@ const ExpenseApprovalDashboard = () => {
   const [loadingMyExpenses, setLoadingMyExpenses] = useState(false);
   const [selectedTableExpense, setSelectedTableExpense] = useState(null);
   const [tableComment, setTableComment] = useState('');
+  const [currency, setCurrency] = useState(null);
 
   // Fetch expenses on component mount and tab change
   useEffect(() => {
     fetchExpenses();
     fetchMyExpenses();
   }, [activeTab, filterCategory, sortBy]);
+
+  useEffect(() => {
+    const fetchedCurrency = localStorage.getItem("selectedCurrency");
+    const cleaned = fetchedCurrency.replace(/"|'/g, "");
+    setCurrency(cleaned);
+  }, []);
 
   const fetchExpenses = async () => {
     setLoading(true);
@@ -171,7 +179,7 @@ const ExpenseApprovalDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -219,7 +227,7 @@ const ExpenseApprovalDashboard = () => {
               <div>
                 <p className="text-sm text-gray-600 mb-1">Total Amount</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  ${expenses.reduce((sum, e) => sum + (e.convertedAmount || 0), 0).toFixed(2)}
+                  {currency}{expenses.reduce((sum, e) => sum + (e.convertedAmount || 0), 0).toFixed(2)}
                 </p>
               </div>
               <DollarSign className="w-10 h-10 text-blue-600 opacity-20" />
@@ -765,6 +773,7 @@ const ExpenseApprovalDashboard = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };
